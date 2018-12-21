@@ -1,0 +1,16 @@
+datasets/
+
+*.pdf
+*.ppt
+*.pptx
+
+# os
+_MACOSX/
+.DS_Store
+
+# vscode
+settings.json
+.vscode
+
+#intelliJ
+.idea
