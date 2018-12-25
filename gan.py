@@ -1,4 +1,5 @@
 import os, sys
+import random
 from keras.models import Sequential
 from keras.layers import Dense
 import librosa
@@ -48,9 +49,26 @@ def preprocess_data(vocals, bgms):
 def create_targets(vocals_stfts, bgms_stfts, mixtures_stfts):
     targets = []
     for i in range(0, len(vocals_stfts)):
-        # targets.append(np.concatenate((vocals_stfts[i], bgms_stfts[i], mixtures_stfts[i]), axis=0))
         targets.append(np.concatenate((vocals_stfts[i], bgms_stfts[i]), axis=0))
     return targets
+
+
+def create_D_data(predicts, targets, mixtures):
+    size = 2
+    index = random.sample(range(0, size), int(size/2))
+    inputs = []
+    outputs = []
+    for i in range(0, size):
+        if i in index:
+            temp = predicts[i]
+            output = np.zeros(temp.shape[1], dtype=int)
+        else:
+            temp = targets[i]
+            output = np.ones(temp.shape[1], dtype=int)
+
+        inputs.append(np.concatenate((temp, mixtures[i]), axis=0))
+        outputs.append(output)
+    return inputs, outputs
 
 
 def build_model(type):
@@ -79,14 +97,28 @@ def main():
     # preprocess data
     mixtures, vocals_stfts, bgms_stfts, mixtures_stfts = preprocess_data(vocals, bgms)
     targets = create_targets(vocals_stfts, bgms_stfts, mixtures_stfts)
+    g_predicts = [
+        np.concatenate((mixtures_stfts[0], mixtures_stfts[0]), axis=0),
+        np.concatenate((vocals_stfts[1], bgms_stfts[1]), axis=0),
+    ]
 
-    # build model
+    # build generator model
     generator = build_model('G')
-    # discriminator = build_model('D')
 
     # fit the model
     generator.fit(mixtures_stfts[0].T, targets[0].T, epochs=10, batch_size=10)
 
+    # predict
+    g_predicts = generator.predict(mixtures_stfts[0].T)
+    print(g_predicts.shape)
+    return
+
+    # build discriminator model
+    d_inputs, d_targets = create_D_data(g_predicts, targets, mixtures_stfts)
+    discriminator = build_model('D')
+    discriminator.fit(d_inputs[0].T, d_targets[0], epochs=10, batch_size=10)
+    d_predict = discriminator.predict(d_inputs[0].T)
+    print(d_predict)
     return
 
 
