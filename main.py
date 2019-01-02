@@ -14,7 +14,7 @@ def get_filenames():
     files = os.listdir('./datasets/MIR-1K_for_MIREX/Wavfile/')[:data_num]
     if is_suffle:
         random.shuffle(files)
-    rate = 0.2
+    rate = 0.8
     num = int(len(files)*rate)
     filenames = {
         'train': files[: num],
