@@ -1,4 +1,6 @@
 datasets/
+__pycache__/
+.ipynb_checkpoints/
 
 *.pdf
 *.ppt
