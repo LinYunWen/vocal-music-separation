@@ -1,7 +1,7 @@
 import numpy as np
 import random
 from keras.models import Sequential, Model
-from keras.layers import Dense, Input, concatenate
+from keras.layers import Dense, Input, multiply, concatenate
 
 class GAN():
     def __init__(self):
@@ -20,24 +20,23 @@ class GAN():
 
 
     def build_model(self, type):
-        model = Sequential()
         if type == 'G':
-            model.add(Dense(1024, input_dim=513, activation='relu'))
-            model.add(Dense(1024, activation='relu'))
-            model.add(Dense(1024, activation='relu'))
-            model.add(Dense(1026, activation='relu'))
-            model.add(Dense(1026, activation='sigmoid'))
-            data = Input(shape=(513, ))
-            output = model(data)
-            return Model(data, output)
+            inputs = Input(shape=(513, ))
+            xs = Dense(1024, activation='relu')(inputs)
+            xs = Dense(1024, activation='relu')(xs)
+            xs = Dense(1024, activation='relu')(xs)
+            xs = Dense(1026, activation='relu')(xs)
+            masks = Dense(1026, activation='sigmoid')(xs)
+            z = concatenate([inputs, inputs], axis=1)
+            predicts = multiply([z, masks])
+            return Model(inputs=inputs, outputs=predicts)
         elif type == 'D':
-            model.add(Dense(513, input_dim=1539, activation='relu'))
-            model.add(Dense(513, activation='relu'))
-            model.add(Dense(513, activation='relu'))
-            model.add(Dense(1, activation='sigmoid'))
-            data = Input(shape=(1539, ))
-            validity = model(data)
-            return Model(data, validity)
+            inputs = Input(shape=(1539, ))
+            xs = Dense(513, activation='relu')(inputs)
+            xs = Dense(513, activation='relu')(xs)
+            xs = Dense(513, activation='relu')(xs)
+            validity = Dense(1, activation='sigmoid')(xs)
+            return Model(inputs=inputs, outputs=validity)
         elif type == 'C':
             self.discriminator.trainable = False
             data = Input(shape=(513, ))
