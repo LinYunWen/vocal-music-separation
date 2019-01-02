@@ -11,11 +11,10 @@ class GAN():
 
         # build discriminator model
         self.discriminator = self.build_model('D')
+        self.discriminator.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
 
         # build combined model
         self.combined = self.build_model('C')
-
-        self.discriminator.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
         self.combined.compile(loss='mean_squared_error', optimizer='adam')
 
 
@@ -47,8 +46,7 @@ class GAN():
 
 
     def prepare_train_data(self, vocals_stfts, bgms_stfts, mixtures_stfts, batch_size):
-        # dimension of vocals_stfts, bgms_stfts, mixtures_stfts are (data*513*579)
-        # mixtures_stfts 10(pick data)*513(frequency)*579(time frame)
+        # dimension of stfts are (data num, 513(frequency), frame num)
 
         indexes = []
         train_data = []
@@ -71,12 +69,12 @@ class GAN():
 
 
     def train(self, vocals_stfts, bgms_stfts, mixtures_stfts, epochs, batch_size, sample_interval):
-        # dimension of vocals_stfts, bgms_stfts, mixtures_stfts are (data*513*579)
-        # mixtures_stfts 10(pick data)*513(frequency)*579(time frame)
+        # dimension of stfts are (data num, 513(frequency), frame num)
 
         valid = np.ones((batch_size, 1))
         fake = np.zeros((batch_size, 1))
         for i in range(epochs):
+            # dimension of train_data are (batch, 1539)
             train_data = self.prepare_train_data(vocals_stfts, bgms_stfts, mixtures_stfts, batch_size)
             noise = np.random.normal(-1, 1, (batch_size, 513))
             gen_data = self.generator.predict(noise)
@@ -95,3 +93,16 @@ class GAN():
                 print(f'-- train epoch {i} --')
 
         return g_loss, d_loss
+
+
+    def predict(self, mixtures_stfts):
+        vocals_stfts_predict = []
+        bgms_stfts_predict = []
+
+        for mixture_stfts in mixtures_stfts:
+            result = self.generator.predict(mixture_stfts.T)
+            # dimension of result is (frame num, 1026)
+            vocals_stfts_predict.append(result.T[: 513])
+            bgms_stfts_predict.append(result.T[513: ])
+        
+        return vocals_stfts_predict, bgms_stfts_predict
