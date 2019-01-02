@@ -8,15 +8,15 @@ class GAN():
         # build generator model
         self.generator = self.build_model('G')
         self.generator.compile(loss='mean_squared_error', optimizer='adam')
-        #self.generator.compile(loss='binary_crossentropy', optimizer='adam')
+
         # build discriminator model
         self.discriminator = self.build_model('D')
-        self.discriminator.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
-        #self.discriminator.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+
         # build combined model
         self.combined = self.build_model('C')
+
+        self.discriminator.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
         self.combined.compile(loss='mean_squared_error', optimizer='adam')
-        #self.combined.compile(loss='binary_crossentropy', optimizer='adam')
 
 
     def build_model(self, type):
