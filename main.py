@@ -91,9 +91,6 @@ def main():
     # dimension of stfts_tests, stfts_predicts are (data num, 513, frame num)
     vocals_test, bgms_test = load_data(filenames['test'])
     _, vocals_stfts_test, bgms_stfts_test, mixtures_stfts_test = preprocess_data(vocals_test, bgms_test)
-    # save_wav(do_stft(vocals_stfts_test[0], True), 'vocal-test')
-    # save_wav(do_stft(bgms_stfts_test[0], True), 'bgm-test')
-    # save_wav(do_stft(mixtures_stfts_test[0], True), 'mixture-test')
     vocals_stfts_predict, bgms_stfts_predict = gan.predict(mixtures_stfts_test)
 
     # verify
