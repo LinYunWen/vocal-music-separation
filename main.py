@@ -45,7 +45,6 @@ def preprocess_data(vocals, bgms):
         vocals_stfts.append(do_stft(vocals[i], False))
         bgms_stfts.append(do_stft(bgms[i], False))
         mixtures_stfts.append(do_stft(mixtures[i], False))
-
     return mixtures, vocals_stfts, bgms_stfts, mixtures_stfts
 
 
@@ -56,8 +55,8 @@ def do_verify(vocals_stfts_test, vocals_stfts_predict, bgms_stfts_test, bgms_stf
 
     for i in range(0, len(vocals_stfts_predict)):
         num = vocals_stfts_predict[i].shape[0]
-        vocal_mse = np.sum(np.mean((vocals_stfts_test[i].T - vocals_stfts_predict[i].T)**2))
-        bgm_mse = np.sum(np.mean((bgms_stfts_test[i].T - bgms_stfts_predict[i].T)**2))
+        vocal_mse = np.sum(np.mean(abs(vocals_stfts_test[i].T - vocals_stfts_predict[i].T)**2))
+        bgm_mse = np.sum(np.mean(abs(bgms_stfts_test[i].T - bgms_stfts_predict[i].T)**2))
         vocals_mse.append(vocal_mse/num)
         bgms_mse.append(bgm_mse/num)
 
@@ -87,7 +86,6 @@ def main():
     vocals, bgms = load_data(filenames['train'])
     _, vocals_stfts, bgms_stfts, mixtures_stfts = preprocess_data(vocals, bgms)
 
-
     # create model
     gan = GAN()
 
@@ -103,7 +101,6 @@ def main():
     vocals_test, bgms_test = load_data(filenames['test'])
     _, vocals_stfts_test, bgms_stfts_test, mixtures_stfts_test = preprocess_data(vocals_test, bgms_test)
     vocals_stfts_predict, bgms_stfts_predict = gan.predict(mixtures_stfts_test)
-
     # verify
     vocals_mse, bgms_mse = do_verify(vocals_stfts_test, vocals_stfts_predict, bgms_stfts_test, bgms_stfts_predict)
 
