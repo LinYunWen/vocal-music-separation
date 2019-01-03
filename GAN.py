@@ -71,6 +71,8 @@ class GAN():
     def train(self, vocals_stfts, bgms_stfts, mixtures_stfts, epochs, batch_size, sample_interval):
         # dimension of stfts are (data num, 513(frequency), frame num)
 
+        d_loss = []
+        g_loss = []
         valid = np.ones((batch_size, 1))
         fake = np.zeros((batch_size, 1))
         for i in range(epochs):
@@ -83,11 +85,11 @@ class GAN():
             # train discriminator
             d_loss_real = self.discriminator.train_on_batch(train_data, valid)
             d_loss_fake = self.discriminator.train_on_batch(gen_data, fake)
-            d_loss = 0.5 * np.add(d_loss_real, d_loss_fake)
+            d_loss.append(0.5 * np.add(d_loss_real, d_loss_fake))
 
             # train generator
             noise = np.random.normal(-1, 1, (batch_size, 513))
-            g_loss = self.combined.train_on_batch(noise, valid)
+            g_loss.append(self.combined.train_on_batch(noise, valid))
 
             if i % 100 == 0:
                 print(f'-- train epoch {i} --')

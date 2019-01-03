@@ -10,6 +10,15 @@ data_num = 10 if '--data-num' not in args else int(args[args.index('--data-num')
 is_suffle = False if '--shuffle' not in args else True
 
 
+def create_result_directory():
+    if not os.path.exists('results'):
+        os.mkdir('results')
+    if not os.path.exists('results/vocals'):
+        os.mkdir('results/vocals')
+    if not os.path.exists('results/bgms'):
+        os.mkdir('results/bgms')
+
+
 def get_filenames():
     files = os.listdir('./datasets/MIR-1K_for_MIREX/Wavfile/')[:data_num]
     if is_suffle:
@@ -59,13 +68,13 @@ def do_verify(vocals_stfts_test, vocals_stfts_predict, bgms_stfts_test, bgms_stf
 def do_save_result(vocals_test, vocals_stfts_predict, bgms_test, bgms_stfts_predict):
     for i in range(0, len(vocals_stfts_predict)):
         vocal_wav_predict = do_stft(vocals_stfts_predict[i], True)
-        save_wav(vocal_wav_predict, f'result-vocal-{i}')
+        save_wav(vocal_wav_predict, f'vocals/vocal-{i}')
 
         bgm_wav_predict = do_stft(bgms_stfts_predict[i], True)
-        save_wav(bgm_wav_predict, f'result-bmg-{i}')
+        save_wav(bgm_wav_predict, f'bgms/bmg-{i}')
 
         plot_data_comp([vocals_test[i], bgms_test[i], vocal_wav_predict, bgm_wav_predict],
-            ['True Vocal', 'True BGM', 'Predict Vocal', 'Predict BGM'], 
+            ['True Vocal', 'True BGM', 'Predict Vocal', 'Predict BGM'],
             True, f'result-wav-{i}', 2, 2)
 
 
@@ -85,6 +94,8 @@ def main():
     # fit the model
     g_loss, d_loss = gan.train(vocals_stfts, bgms_stfts, mixtures_stfts,
         epochs=epoch, batch_size=32, sample_interval=200)
+    plot_data(g_loss, 'Generator Loss', True, 'g_loss')
+    plot_data(d_loss, 'Discriminator Loss', True, 'd_loss')
     print(f'g_loss: {g_loss}, d_loss: {d_loss}')
 
     # predict
@@ -103,8 +114,7 @@ def main():
 
 
 if __name__ == '__main__':
-    if not os.path.exists('results'):
-        os.mkdir('results')
+    create_result_directory()
     start = time.time()
     main()
     end = time.time()

@@ -34,8 +34,9 @@ def save_wav(wav, filename):
     librosa.output.write_wav(f'results/{filename}.wav', wav, 16000)
 
 
-def plot_data(data, is_save=False, filename=None):
+def plot_data(data, title, is_save=False, filename=None):
     plt.plot(data)
+    plt.title(title)
 
     if is_save and filename is not None:
         plt.savefig(f'results/{filename}.png')
