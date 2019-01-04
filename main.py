@@ -70,7 +70,7 @@ def do_save_result(vocals_test, vocals_stfts_predict, bgms_test, bgms_stfts_pred
         save_wav(vocal_wav_predict, f'vocals/vocal-{i}')
 
         bgm_wav_predict = do_stft(bgms_stfts_predict[i], True)
-        save_wav(bgm_wav_predict, f'bgms/bmg-{i}')
+        save_wav(bgm_wav_predict, f'bgms/bgm-{i}')
 
         plot_data_comp([vocals_test[i], bgms_test[i], vocal_wav_predict, bgm_wav_predict],
             ['True Vocal', 'True BGM', 'Predict Vocal', 'Predict BGM'],

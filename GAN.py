@@ -54,7 +54,7 @@ def calc_complex(inputs):
 class GAN():
     def __init__(self):
         # set optimizer learning rate 0.0001
-        optimizer = Adam(0.0001, 0.5)
+        optimizer = Adam(0.0002, 0.5)
         # build generator model
         self.generator = self.build_model('G')
         # generator's loss function must be absolute, because of result will be complex number
@@ -169,7 +169,7 @@ class GAN():
         valid = np.ones((batch_size, 1))
         fake = np.zeros((batch_size, 1))
         # supervised learning first
-        self.pre_train(vocals_stfts, bgms_stfts, mixtures_stfts, int(epochs/10), batch_size, sample_interval)
+        self.pre_train(vocals_stfts, bgms_stfts, mixtures_stfts, epochs, batch_size, sample_interval)
         for i in range(epochs):
             # train D 10 times, G 1 time
             for j in range(0, 10):
@@ -201,7 +201,7 @@ class GAN():
             mixture_stfts = np.concatenate((mixture_stfts.real, mixture_stfts.imag), axis=1)
             result = self.generator.predict(mixture_stfts)
             # dimension of result is (frame num, 1026)
-            vocals_stfts_predict.append(result.T[: 513])
-            bgms_stfts_predict.append(result.T[513: ])
+            bgms_stfts_predict.append(result.T[: 513])
+            vocals_stfts_predict.append(result.T[513: ])
         
         return vocals_stfts_predict, bgms_stfts_predict
