@@ -1,6 +1,8 @@
 import librosa
 import matplotlib.pyplot as plt
 
+plt.subplots_adjust(hspace=0.5)
+
 
 def load_data(filenames):
     vocals = []

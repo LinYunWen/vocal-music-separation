@@ -4,8 +4,11 @@ import numpy as np
 from GAN import GAN
 from tools import load_data, do_stft, load_wav, save_wav, plot_data, plot_data_comp
 
+# os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
+# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
 args = sys.argv
-epoch = 100 if '--epoch' not in args else int(args[args.index('--epoch') + 1])
+epoch = 200 if '--epoch' not in args else int(args[args.index('--epoch') + 1])
 data_num = 10 if '--data-num' not in args else int(args[args.index('--data-num') + 1])
 is_suffle = False if '--shuffle' not in args else True
 
@@ -94,7 +97,7 @@ def main():
         epochs=epoch, batch_size=32, sample_interval=200)
     plot_data(g_loss, 'Generator Loss', True, 'g_loss')
     plot_data(d_loss, 'Discriminator Loss', True, 'd_loss')
-    print(f'g_loss: {g_loss}, d_loss: {d_loss}')
+    # print(f'g_loss: {g_loss}, d_loss: {d_loss}')
 
     # predict
     # dimension of stfts_tests, stfts_predicts are (data num, 513, frame num)

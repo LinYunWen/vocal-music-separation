@@ -5,6 +5,7 @@ from keras.layers import Dense, Input, concatenate
 import librosa
 import numpy as np
 
+
 def load_data():
     vocals = []
     bgms = []
@@ -146,12 +147,14 @@ class GAN():
             # train generator
             noise = np.random.normal(-1, 1, (batch_size, 513))
             g_loss = self.combined.train_on_batch(noise, valid)
-            print 'g_loss: '+str(g_loss)+', d_loss: '+str(d_loss)
+            print('g_loss: '+str(g_loss)+', d_loss: '+str(d_loss))
+
 
 def main():
     gan = GAN()
     gan.train(epochs=100, batch_size=32, sample_interval=200)
     return
+
 
 if __name__ == '__main__':
     main()
