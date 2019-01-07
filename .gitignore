@@ -2,6 +2,7 @@ datasets/
 results/
 __pycache__/
 .ipynb_checkpoints/
+results*
 
 *.pdf
 *.ppt

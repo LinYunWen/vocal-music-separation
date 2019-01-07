@@ -11,6 +11,7 @@ args = sys.argv
 epoch = 200 if '--epoch' not in args else int(args[args.index('--epoch') + 1])
 data_num = 10 if '--data-num' not in args else int(args[args.index('--data-num') + 1])
 is_suffle = False if '--shuffle' not in args else True
+is_eval = False if '--eval' not in args else True
 
 
 def create_result_directory():
@@ -23,14 +24,16 @@ def create_result_directory():
 
 
 def get_filenames():
+    global data_num
     files = os.listdir('./datasets/MIR-1K_for_MIREX/Wavfile/')[:data_num]
+    files.sort()
     if is_suffle:
         random.shuffle(files)
     rate = 0.8
     num = int(len(files)*rate)
     filenames = {
         'train': files[: num],
-        'test': files[num: ],
+        'test': files[num: ] if not is_eval else files[: len(files) - num],
     }
     return filenames
 

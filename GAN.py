@@ -158,8 +158,8 @@ class GAN():
             target = np.concatenate((target_bgm, target_vocal), axis=1)
             # predict, and calculate loss
             g_loss.append(self.generator.train_on_batch(mixture_data, target))
-        print(g_loss)
-        print(d_loss)
+        # print(g_loss)
+        # print(d_loss)
         return
 
     def train(self, vocals_stfts, bgms_stfts, mixtures_stfts, epochs, batch_size, sample_interval):

@@ -39,6 +39,7 @@ def save_wav(wav, filename):
 def plot_data(data, title, is_save=False, filename=None):
     plt.plot(data)
     plt.title(title)
+    plt.tight_layout()
 
     if is_save and filename is not None:
         plt.savefig(f'results/{filename}.png')
@@ -56,6 +57,7 @@ def plot_data_comp(data, titles, is_save=False, filename=None, row=1, col=1):
         plt.subplot(row, col, i + 1)
         plt.plot(data[i])
         plt.title(titles[i])
+        plt.tight_layout()
 
     if is_save and filename is not None:
         plt.savefig(f'results/{filename}.png')
